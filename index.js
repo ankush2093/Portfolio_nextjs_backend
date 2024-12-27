@@ -31,12 +31,22 @@ app.post("/api/contact", async (req, res) => {
   const mailOptions = {
     from: email,
     to: process.env.EMAIL_USER,
-    subject: `New Contact Form Submission  from Lastest Portfolio ${name}`,
+    subject: `New Contact Form Submission from Latest Portfolio ${name}`,
     text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
   };
 
+  const welcomeMailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Welcome to Ankush Kumar's Portfolio",
+    text: `Hi ${name},\n\nThank you for connecting with Ankush Kumar. I will contact you back soon.\n\nBest Regards,\nAnkush Kumar`,
+  };
+
   try {
+    // Send admin email
     await transporter.sendMail(mailOptions);
+    // Send welcome email to user
+    await transporter.sendMail(welcomeMailOptions);
     res.status(200).json({ message: "Message sent successfully." });
   } catch (error) {
     console.error("Error sending email:", error);
@@ -48,4 +58,3 @@ const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
